@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+dist/
+build/
+coverage/
+
+*.log
+
+dev.db
+*.db
+*.db-journal
+
+.vscode/
+.DS_Store
