@@ -59,24 +59,40 @@ model Category {
 }
 
 model Customer {
-  id             String    @id @default(uuid())
-  name           String
-  phone          String?
-  email          String?
-  address        String?
-  city           String?
-  state          String?
-  pan            String?
-  gstin          String?
-  openingBalance Decimal   @default(0.00) @db.Decimal(12, 2)
-  currentBalance Decimal   @default(0.00) @db.Decimal(12, 2)
-  createdAt      DateTime  @default(now())
+  id                 String    @id @default(uuid())
+  name               String
+  phone              String?
+  email              String?
+  address            String?
+  city               String?
+  state              String?
+  pan                String?
+  gstin              String?
+  openingBalance     Decimal   @default(0.00) @db.Decimal(12, 2)
+  openingBalanceType String    @default("DEBIT") // "DEBIT" or "CREDIT"
+  currentBalance     Decimal   @default(0.00) @db.Decimal(12, 2)
+  isActive           Boolean   @default(true)
+  createdAt          DateTime  @default(now())
 
   salesInvoices   SalesInvoice[]
   ledgerEntries   CustomerLedgerEntry[]
   paymentReceipts PaymentReceipt[]
 
   @@index([phone])
+}
+
+model DailyMetalRate {
+  id           String   @id @default(uuid())
+  rateDate     DateTime @default(now()) @db.Date
+  gold22kRate  Decimal  @db.Decimal(10, 2)
+  gold24kRate  Decimal  @db.Decimal(10, 2)
+  silverRate   Decimal  @db.Decimal(10, 2)
+  createdById  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([rateDate])
+  @@index([rateDate])
 }
 
 model SalesInvoice {
