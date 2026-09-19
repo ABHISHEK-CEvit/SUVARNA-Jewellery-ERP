@@ -39,6 +39,7 @@ export const CategoriesView: React.FC = () => {
     defaultPurity: '916',
     defaultHsnCode: '7113',
     gstRate: 3.0,
+    discountRate: 0.0,
     isActive: true,
   });
   const [submitting, setSubmitting] = useState(false);
@@ -71,6 +72,7 @@ export const CategoriesView: React.FC = () => {
       defaultPurity: '916',
       defaultHsnCode: '7113',
       gstRate: 3.0,
+      discountRate: 0.0,
       isActive: true,
     });
     setFormError(null);
@@ -85,6 +87,7 @@ export const CategoriesView: React.FC = () => {
       defaultPurity: cat.defaultPurity || '',
       defaultHsnCode: cat.defaultHsnCode,
       gstRate: cat.gstRate,
+      discountRate: cat.discountRate ?? 0,
       isActive: cat.isActive,
     });
     setFormError(null);
@@ -251,6 +254,7 @@ export const CategoriesView: React.FC = () => {
                 <th className="px-4 py-3.5">Default Purity</th>
                 <th className="px-4 py-3.5">HSN Code</th>
                 <th className="px-4 py-3.5">Configured GST</th>
+                <th className="px-4 py-3.5">Category Discount</th>
                 <th className="px-4 py-3.5">Status</th>
                 {isAdmin && <th className="px-5 py-3.5 text-right">Actions</th>}
               </tr>
@@ -258,13 +262,13 @@ export const CategoriesView: React.FC = () => {
             <tbody className="divide-y divide-slate-800/60">
               {loading ? (
                 <tr>
-                  <td colSpan={isAdmin ? 7 : 6} className="px-5 py-8 text-center text-slate-500">
+                  <td colSpan={isAdmin ? 8 : 7} className="px-5 py-8 text-center text-slate-500">
                     Loading categories...
                   </td>
                 </tr>
               ) : filteredCategories.length === 0 ? (
                 <tr>
-                  <td colSpan={isAdmin ? 7 : 6} className="px-5 py-8 text-center text-slate-500">
+                  <td colSpan={isAdmin ? 8 : 7} className="px-5 py-8 text-center text-slate-500">
                     No categories found matching criteria.
                   </td>
                 </tr>
@@ -294,6 +298,9 @@ export const CategoriesView: React.FC = () => {
                     <td className="px-4 py-3.5 text-slate-400 font-mono">{cat.defaultHsnCode}</td>
                     <td className="px-4 py-3.5 font-mono text-amber-300">
                       {cat.gstRate.toFixed(2)}%
+                    </td>
+                    <td className="px-4 py-3.5 font-mono text-emerald-400 font-semibold">
+                      {(cat.discountRate ?? 0).toFixed(2)}%
                     </td>
                     <td className="px-4 py-3.5">
                       {cat.isActive ? (
@@ -364,21 +371,24 @@ export const CategoriesView: React.FC = () => {
             <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
               <div>
                 <label className="block text-slate-400 font-medium mb-1">
-                  Category Name <span className="text-amber-500">*</span>
+                  Category Name (Item Type) <span className="text-amber-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Diamond Necklace, Gold Bangle, Ring"
+                  placeholder="e.g. Ring, Bangle, Necklace, Earrings, Chain, Pendant"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500/50"
                 />
+                <span className="text-[10px] text-slate-500 mt-0.5 block">
+                  Represents the jewellery ornament type (e.g. Ring), independent of metal.
+                </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-400 font-medium mb-1">Metal Type</label>
+                  <label className="block text-slate-400 font-medium mb-1">Default Metal</label>
                   <select
                     value={formData.metalType}
                     onChange={(e) => setFormData({ ...formData, metalType: e.target.value })}
@@ -387,7 +397,6 @@ export const CategoriesView: React.FC = () => {
                     <option value="GOLD">GOLD</option>
                     <option value="SILVER">SILVER</option>
                     <option value="PLATINUM">PLATINUM</option>
-                    <option value="DIAMOND">DIAMOND</option>
                     <option value="OTHER">OTHER</option>
                   </select>
                 </div>
@@ -396,7 +405,7 @@ export const CategoriesView: React.FC = () => {
                   <label className="block text-slate-400 font-medium mb-1">Default Purity</label>
                   <input
                     type="text"
-                    placeholder="e.g. 916, 750, 925"
+                    placeholder="e.g. 22K (916), 18K (750)"
                     value={formData.defaultPurity || ''}
                     onChange={(e) => setFormData({ ...formData, defaultPurity: e.target.value })}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500/50"
@@ -404,7 +413,7 @@ export const CategoriesView: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block text-slate-400 font-medium mb-1">Default HSN Code</label>
                   <input
@@ -419,7 +428,7 @@ export const CategoriesView: React.FC = () => {
 
                 <div>
                   <label className="block text-slate-400 font-medium mb-1">
-                    GST Rate % (Configurable)
+                    GST Rate %
                   </label>
                   <div className="relative">
                     <input
@@ -429,8 +438,34 @@ export const CategoriesView: React.FC = () => {
                       max="100"
                       required
                       value={formData.gstRate}
+                      onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
                       onChange={(e) =>
-                        setFormData({ ...formData, gstRate: parseFloat(e.target.value) || 0 })
+                        setFormData({ ...formData, gstRate: Math.max(0, parseFloat(e.target.value) || 0) })
+                      }
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500/50 font-mono"
+                    />
+                    <Percent className="w-3.5 h-3.5 text-slate-500 absolute right-3 top-2.5" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-medium mb-1">
+                    Discount %
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="100"
+                      required
+                      value={formData.discountRate ?? 0}
+                      onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          discountRate: Math.max(0, parseFloat(e.target.value) || 0),
+                        })
                       }
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500/50 font-mono"
                     />

@@ -6,10 +6,11 @@ import { DashboardView } from './components/DashboardView';
 import { CustomersView } from './components/CustomersView';
 import { CategoriesView } from './components/CategoriesView';
 import { SettingsView } from './components/SettingsView';
+import { BillingView } from './components/BillingView';
 
 export const App: React.FC = () => {
   const { user, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'customers' | 'categories' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'billing' | 'customers' | 'categories' | 'settings'>('billing');
   const [ratesRefreshKey, setRatesRefreshKey] = useState(0);
 
   if (loading) {
@@ -36,6 +37,7 @@ export const App: React.FC = () => {
       {activeTab === 'dashboard' && (
         <DashboardView onNavigate={(tab) => setActiveTab(tab as any)} />
       )}
+      {activeTab === 'billing' && <BillingView />}
       {activeTab === 'customers' && <CustomersView />}
       {activeTab === 'categories' && <CategoriesView />}
       {activeTab === 'settings' && (

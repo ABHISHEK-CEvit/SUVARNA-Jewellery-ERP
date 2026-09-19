@@ -51,6 +51,9 @@ export const UpdateBusinessSettingsSchema = z.object({
   defaultGstRate: z.number().min(0).max(100),
   todayGold22kRate: z.number().min(0),
   todayGold24kRate: z.number().min(0),
+  todayGold18kRate: z.number().min(0).default(0),
+  todayGold20kRate: z.number().min(0).default(0),
+  todayGold14kRate: z.number().min(0).default(0),
   todaySilverRate: z.number().min(0),
 });
 
@@ -76,6 +79,9 @@ export interface BusinessSettingsDto {
   defaultGstRate: number;
   todayGold22kRate: number;
   todayGold24kRate: number;
+  todayGold18kRate?: number;
+  todayGold20kRate?: number;
+  todayGold14kRate?: number;
   todaySilverRate: number;
   updatedAt: string;
 }
@@ -86,6 +92,9 @@ export interface DailyMetalRateDto {
   rateDate: string;
   gold22kRate: number;
   gold24kRate: number;
+  gold18kRate?: number;
+  gold20kRate?: number;
+  gold14kRate?: number;
   silverRate: number;
   createdAt: string;
 }
@@ -97,13 +106,14 @@ export const CreateCategorySchema = z.object({
   defaultPurity: z.string().optional().nullable(),
   defaultHsnCode: z.string().default('7113'),
   gstRate: z.number().min(0).max(100).default(3.00),
+  discountRate: z.number().min(0).max(100).default(0.00),
   isActive: z.boolean().default(true),
 });
 
 export const UpdateCategorySchema = CreateCategorySchema.partial();
 
-export type CreateCategoryInput = z.infer<typeof CreateCategorySchema>;
-export type UpdateCategoryInput = z.infer<typeof UpdateCategorySchema>;
+export type CreateCategoryInput = z.input<typeof CreateCategorySchema>;
+export type UpdateCategoryInput = z.input<typeof UpdateCategorySchema>;
 
 export interface CategoryDto {
   id: string;
@@ -112,6 +122,7 @@ export interface CategoryDto {
   defaultPurity?: string | null;
   defaultHsnCode: string;
   gstRate: number;
+  discountRate: number;
   isActive: boolean;
   createdAt: string;
 }
@@ -119,14 +130,14 @@ export interface CategoryDto {
 // --- Customers ---
 export const CreateCustomerSchema = z.object({
   name: z.string().min(2, 'Customer name must be at least 2 characters'),
-  phone: z.string().optional().nullable(),
+  phone: z.string().min(1, 'Customer mobile number is required'),
   email: z.string().email().optional().nullable().or(z.literal('')),
   address: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
   pan: z.string().optional().nullable(),
   gstin: z.string().optional().nullable(),
-  openingBalance: z.number().default(0.00),
+  openingBalance: z.number().min(0).default(0.00),
   openingBalanceType: z.enum(['DEBIT', 'CREDIT']).default('DEBIT'),
 });
 
@@ -181,5 +192,203 @@ export interface PaginatedResponse<T> {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+// --- Phase 3: Sales & Billing ---
+
+export const CreateSalesInvoiceItemSchema = z.object({
+  categoryId: z.string().optional().nullable(),
+  categoryName: z.string().min(1, 'Category name is required'),
+  description: z.string().min(1, 'Description is required'),
+  designStyle: z.string().optional().nullable(),
+  metalType: z.string().default('GOLD'),
+  purity: z.string().min(1, 'Purity is required'),
+  grossWeight: z.number().min(0).default(0),
+  netWeight: z.number().positive('Net weight must be greater than 0'),
+  metalRatePerGram: z.number().positive('Metal rate must be greater than 0'),
+  ratePerTola: z.number().min(0).optional().nullable(),
+  hasStone: z.boolean().default(false),
+  stoneType: z.string().optional().nullable(),
+  stoneCarat: z.number().min(0).optional().nullable(),
+  stoneWeight: z.number().min(0).optional().nullable(),
+  stoneCharges: z.number().min(0).default(0),
+  makingCharges: z.number().min(0).default(0),
+  discountApplicable: z.boolean().default(false),
+  discountPercentage: z.number().min(0).max(100).default(0),
+});
+
+export type CreateSalesInvoiceItemInput = z.input<typeof CreateSalesInvoiceItemSchema>;
+
+export const CreateSalesInvoiceSchema = z.object({
+  customerId: z.string().min(1, 'Customer is required'),
+  items: z.array(CreateSalesInvoiceItemSchema).min(1, 'At least one item is required'),
+  paymentMode: z.enum(['CASH', 'CARD', 'UPI']),
+  notes: z.string().optional().nullable(),
+  discountType: z.enum(['CATEGORY', 'OVERALL']).default('CATEGORY'),
+  overallDiscountPercentage: z.number().min(0).max(100).default(0),
+  overallDiscountAmount: z.number().min(0).default(0),
+});
+
+export type CreateSalesInvoiceInput = z.input<typeof CreateSalesInvoiceSchema>;
+
+export const UpdateSalesInvoiceSchema = z.object({
+  customerId: z.string().optional().nullable(),
+  items: z.array(CreateSalesInvoiceItemSchema).min(1, 'At least one item is required'),
+  paymentMode: z.enum(['CASH', 'CARD', 'UPI']),
+  changeReason: z.string().optional().nullable(),
+  notes: z.string().optional().nullable(),
+  discountType: z.enum(['CATEGORY', 'OVERALL']).default('CATEGORY'),
+  overallDiscountPercentage: z.number().min(0).max(100).default(0),
+  overallDiscountAmount: z.number().min(0).default(0),
+});
+
+export type UpdateSalesInvoiceInput = z.input<typeof UpdateSalesInvoiceSchema>;
+
+export const CreateCorrectionRequestSchema = z.object({
+  reason: z.string().min(5, 'Reason must be at least 5 characters'),
+});
+
+export type CreateCorrectionRequestInput = z.infer<typeof CreateCorrectionRequestSchema>;
+
+export const ResolveCorrectionRequestSchema = z.object({
+  resolutionNotes: z.string().optional().nullable(),
+  status: z.enum(['RESOLVED', 'REJECTED']),
+});
+
+export type ResolveCorrectionRequestInput = z.infer<typeof ResolveCorrectionRequestSchema>;
+
+export const InvalidateBillSchema = z.object({
+  reason: z.string().min(3, 'Reason for invalidation is required'),
+});
+
+export type InvalidateBillInput = z.infer<typeof InvalidateBillSchema>;
+
+export const RestoreBillSchema = z.object({
+  reason: z.string().optional().nullable(),
+});
+
+export type RestoreBillInput = z.infer<typeof RestoreBillSchema>;
+
+export interface SalesInvoiceItemDto {
+  id: string;
+  invoiceId: string;
+  categoryId?: string | null;
+  categoryName: string;
+  description: string;
+  designStyle?: string | null;
+  metalType: string;
+  purity: string;
+  grossWeight: number;
+  stoneWeight: number;
+  stoneCarat?: number | null;
+  netWeight: number;
+  metalRatePerGram: number;
+  ratePerTola?: number | null;
+  metalValue: number;
+  hasStone: boolean;
+  stoneType?: string | null;
+  stoneCharges: number;
+  makingCharges: number;
+  discountApplicable: boolean;
+  discountPercentage: number;
+  discountAmount: number;
+  itemSubtotal: number;
+  taxableAmount: number;
+  gstRate: number;
+  gstAmount: number;
+  totalItemAmount: number;
+}
+
+export interface PaymentReceiptDto {
+  id: string;
+  receiptNumber: string;
+  date: string;
+  invoiceId?: string | null;
+  customerId?: string | null;
+  paymentMode: string;
+  amount: number;
+  referenceNumber?: string | null;
+  notes?: string | null;
+  createdAt: string;
+}
+
+export interface SalesInvoiceHistoryDto {
+  id: string;
+  invoiceId: string;
+  version: number;
+  snapshot: any;
+  changeReason?: string | null;
+  changedById: string;
+  changedByName: string;
+  changedByRole: string;
+  changedFields?: any;
+  createdAt: string;
+}
+
+export interface BillCorrectionRequestDto {
+  id: string;
+  invoiceId: string;
+  invoiceNumber?: string;
+  customerName?: string;
+  requestedById: string;
+  requestedByName: string;
+  requestedByRole: string;
+  reason: string;
+  status: 'PENDING' | 'RESOLVED' | 'REJECTED';
+  resolvedById?: string | null;
+  resolvedByName?: string | null;
+  resolutionNotes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SalesInvoiceDto {
+  id: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  customerId?: string | null;
+  customerName: string;
+  customerPhone?: string | null;
+  goldRate22k: number;
+  goldRate24k: number;
+  goldRate18k?: number | null;
+  goldRate20k?: number | null;
+  goldRate14k?: number | null;
+  silverRate?: number | null;
+  grossItemsAmount: number;
+  totalDiscount: number;
+  discountType?: 'CATEGORY' | 'OVERALL';
+  overallDiscountPercentage?: number;
+  overallDiscountAmount?: number;
+  taxableAmount: number;
+  gstRate: number;
+  cgstAmount: number;
+  sgstAmount: number;
+  igstAmount: number;
+  totalTaxAmount: number;
+  roundOff: number;
+  netAmount: number;
+  paidAmount: number;
+  balanceAmount: number;
+  status: string;
+  version: number;
+  notes?: string | null;
+  createdById: string;
+  createdByName?: string;
+  createdByRole?: string;
+  editCount: number;
+  lastEditedAt?: string | null;
+  lastEditedById?: string | null;
+  invalidatedAt?: string | null;
+  invalidatedById?: string | null;
+  invalidationReason?: string | null;
+  restoredAt?: string | null;
+  restoredById?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  items: SalesInvoiceItemDto[];
+  payments: PaymentReceiptDto[];
+  history?: SalesInvoiceHistoryDto[];
+  correctionRequests?: BillCorrectionRequestDto[];
 }
 

@@ -20,6 +20,8 @@ import { CustomersController } from './modules/customers/customers.controller';
 import { CustomersService } from './modules/customers/customers.service';
 import { UsersController } from './modules/users/users.controller';
 import { UsersService } from './modules/users/users.service';
+import { BillingController } from './modules/billing/billing.controller';
+import { BillingService } from './modules/billing/billing.service';
 import { AuthGuard } from './common/guards/auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 
@@ -36,6 +38,8 @@ Reflect.defineMetadata('design:paramtypes', [CustomersService], CustomersControl
 Reflect.defineMetadata('design:paramtypes', [PrismaService], CustomersService);
 Reflect.defineMetadata('design:paramtypes', [UsersService], UsersController);
 Reflect.defineMetadata('design:paramtypes', [PrismaService], UsersService);
+Reflect.defineMetadata('design:paramtypes', [BillingService], BillingController);
+Reflect.defineMetadata('design:paramtypes', [PrismaService], BillingService);
 Reflect.defineMetadata('design:paramtypes', [PrismaService], AuthGuard);
 Reflect.defineMetadata('design:paramtypes', [Reflector], RolesGuard);
 

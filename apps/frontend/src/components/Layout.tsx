@@ -10,6 +10,7 @@ import {
   Users,
   Layers,
   Settings,
+  Receipt,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -29,6 +30,7 @@ export const Layout: React.FC<LayoutProps> = ({
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'billing', label: 'Sales & Billing', icon: Receipt },
     { id: 'customers', label: 'Customers', icon: Users },
     { id: 'categories', label: 'Categories', icon: Layers },
     { id: 'settings', label: 'Shop Settings', icon: Settings },
@@ -48,7 +50,7 @@ export const Layout: React.FC<LayoutProps> = ({
               <div className="flex items-center space-x-2">
                 <span className="font-bold text-lg text-slate-100 tracking-tight">SUVARNA</span>
                 <span className="text-xs bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded-full font-medium">
-                  Phase 2
+                  Phase 3
                 </span>
               </div>
               <span className="text-[10px] text-slate-400 block -mt-0.5">Jewellery ERP</span>
@@ -124,7 +126,7 @@ export const Layout: React.FC<LayoutProps> = ({
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 py-4 px-6 text-center text-xs text-slate-600">
-        SUVARNA Jewellery ERP &bull; Modular Monolith &bull; Bill-Centric Design for Small Jewellers &bull; Phase 2
+        SUVARNA Jewellery ERP &bull; Modular Monolith &bull; Bill-Centric Design for Small Jewellers &bull; Phase 3
       </footer>
     </div>
   );

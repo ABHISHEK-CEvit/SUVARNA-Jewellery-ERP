@@ -29,6 +29,9 @@ export class SettingsService {
       defaultGstRate: Number(settings.defaultGstRate),
       todayGold22kRate: Number(settings.todayGold22kRate),
       todayGold24kRate: Number(settings.todayGold24kRate),
+      todayGold18kRate: Number(settings.todayGold18kRate || 0),
+      todayGold20kRate: Number(settings.todayGold20kRate || 0),
+      todayGold14kRate: Number(settings.todayGold14kRate || 0),
       todaySilverRate: Number(settings.todaySilverRate),
       updatedAt: settings.updatedAt.toISOString(),
     };
@@ -56,6 +59,9 @@ export class SettingsService {
         defaultGstRate: input.defaultGstRate,
         todayGold22kRate: input.todayGold22kRate,
         todayGold24kRate: input.todayGold24kRate,
+        todayGold18kRate: input.todayGold18kRate || 0,
+        todayGold20kRate: input.todayGold20kRate || 0,
+        todayGold14kRate: input.todayGold14kRate || 0,
         todaySilverRate: input.todaySilverRate,
       },
       create: {
@@ -78,6 +84,9 @@ export class SettingsService {
         defaultGstRate: input.defaultGstRate,
         todayGold22kRate: input.todayGold22kRate,
         todayGold24kRate: input.todayGold24kRate,
+        todayGold18kRate: input.todayGold18kRate || 0,
+        todayGold20kRate: input.todayGold20kRate || 0,
+        todayGold14kRate: input.todayGold14kRate || 0,
         todaySilverRate: input.todaySilverRate,
       },
     });
@@ -91,6 +100,9 @@ export class SettingsService {
       update: {
         gold22kRate: input.todayGold22kRate,
         gold24kRate: input.todayGold24kRate,
+        gold18kRate: input.todayGold18kRate || 0,
+        gold20kRate: input.todayGold20kRate || 0,
+        gold14kRate: input.todayGold14kRate || 0,
         silverRate: input.todaySilverRate,
         createdById: userId,
       },
@@ -98,6 +110,9 @@ export class SettingsService {
         rateDate: today,
         gold22kRate: input.todayGold22kRate,
         gold24kRate: input.todayGold24kRate,
+        gold18kRate: input.todayGold18kRate || 0,
+        gold20kRate: input.todayGold20kRate || 0,
+        gold14kRate: input.todayGold14kRate || 0,
         silverRate: input.todaySilverRate,
         createdById: userId,
       },
@@ -108,6 +123,9 @@ export class SettingsService {
       defaultGstRate: Number(updated.defaultGstRate),
       todayGold22kRate: Number(updated.todayGold22kRate),
       todayGold24kRate: Number(updated.todayGold24kRate),
+      todayGold18kRate: Number(updated.todayGold18kRate || 0),
+      todayGold20kRate: Number(updated.todayGold20kRate || 0),
+      todayGold14kRate: Number(updated.todayGold14kRate || 0),
       todaySilverRate: Number(updated.todaySilverRate),
       updatedAt: updated.updatedAt.toISOString(),
     };
@@ -124,6 +142,9 @@ export class SettingsService {
       rateDate: r.rateDate.toISOString().split('T')[0],
       gold22kRate: Number(r.gold22kRate),
       gold24kRate: Number(r.gold24kRate),
+      gold18kRate: Number(r.gold18kRate || 0),
+      gold20kRate: Number(r.gold20kRate || 0),
+      gold14kRate: Number(r.gold14kRate || 0),
       silverRate: Number(r.silverRate),
       createdAt: r.createdAt.toISOString(),
     }));
@@ -134,6 +155,9 @@ export class SettingsService {
     return {
       gold22kRate: settings.todayGold22kRate,
       gold24kRate: settings.todayGold24kRate,
+      gold18kRate: settings.todayGold18kRate || 0,
+      gold20kRate: settings.todayGold20kRate || 0,
+      gold14kRate: settings.todayGold14kRate || 0,
       silverRate: settings.todaySilverRate,
       updatedAt: settings.updatedAt,
     };

@@ -92,8 +92,11 @@ describe('SettingsService', () => {
       invoicePrefix: 'SJ',
       termsConditions: 'Terms apply',
       defaultGstRate: 3.0,
-      todayGold22kRate: 7250.0,
       todayGold24kRate: 7850.0,
+      todayGold22kRate: 7250.0,
+      todayGold20kRate: 6600.0,
+      todayGold18kRate: 5950.0,
+      todayGold14kRate: 4600.0,
       todaySilverRate: 92.0,
     };
 

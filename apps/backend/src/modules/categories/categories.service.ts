@@ -14,6 +14,7 @@ export class CategoriesService {
       defaultPurity: c.defaultPurity,
       defaultHsnCode: c.defaultHsnCode,
       gstRate: Number(c.gstRate),
+      discountRate: Number(c.discountRate ?? 0),
       isActive: c.isActive,
       createdAt: c.createdAt.toISOString(),
     };
@@ -71,6 +72,7 @@ export class CategoriesService {
         defaultPurity: input.defaultPurity?.trim() || null,
         defaultHsnCode: input.defaultHsnCode?.trim() || '7113',
         gstRate: input.gstRate ?? 3.00,
+        discountRate: input.discountRate ?? 0.00,
         isActive: input.isActive ?? true,
       },
     });
@@ -111,6 +113,7 @@ export class CategoriesService {
         ...(input.defaultPurity !== undefined && { defaultPurity: input.defaultPurity ? input.defaultPurity.trim() : null }),
         ...(input.defaultHsnCode !== undefined && { defaultHsnCode: input.defaultHsnCode.trim() }),
         ...(input.gstRate !== undefined && { gstRate: input.gstRate }),
+        ...(input.discountRate !== undefined && { discountRate: input.discountRate }),
         ...(input.isActive !== undefined && { isActive: input.isActive }),
       },
     });

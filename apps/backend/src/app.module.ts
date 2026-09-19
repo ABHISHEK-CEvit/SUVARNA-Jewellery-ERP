@@ -6,6 +6,7 @@ import { UsersModule } from './modules/users/users.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { CustomersModule } from './modules/customers/customers.module';
+import { BillingModule } from './modules/billing/billing.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CustomersModule } from './modules/customers/customers.module';
     SettingsModule,
     CategoriesModule,
     CustomersModule,
+    BillingModule,
   ],
   controllers: [],
   providers: [PrismaService],

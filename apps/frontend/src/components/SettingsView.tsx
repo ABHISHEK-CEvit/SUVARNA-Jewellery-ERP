@@ -52,6 +52,9 @@ export const SettingsView: React.FC<{ onRatesUpdated?: () => void }> = ({ onRate
     defaultGstRate: 3.0,
     todayGold22kRate: 0,
     todayGold24kRate: 0,
+    todayGold18kRate: 0,
+    todayGold20kRate: 0,
+    todayGold14kRate: 0,
     todaySilverRate: 0,
   });
 
@@ -86,6 +89,9 @@ export const SettingsView: React.FC<{ onRatesUpdated?: () => void }> = ({ onRate
           defaultGstRate: s.defaultGstRate,
           todayGold22kRate: s.todayGold22kRate,
           todayGold24kRate: s.todayGold24kRate,
+          todayGold18kRate: s.todayGold18kRate || 0,
+          todayGold20kRate: s.todayGold20kRate || 0,
+          todayGold14kRate: s.todayGold14kRate || 0,
           todaySilverRate: s.todaySilverRate,
         });
       }
@@ -209,30 +215,6 @@ export const SettingsView: React.FC<{ onRatesUpdated?: () => void }> = ({ onRate
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
               <label className="block text-amber-400 font-semibold text-xs">
-                Gold 22K (916) Rate / gram
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-2 text-slate-500 font-mono text-sm">₹</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  required
-                  disabled={!isAdmin}
-                  value={formData.todayGold22kRate}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      todayGold22kRate: parseFloat(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-slate-100 font-mono font-bold text-sm focus:outline-none focus:border-amber-500/50 disabled:opacity-75"
-                />
-              </div>
-            </div>
-
-            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
-              <label className="block text-amber-400 font-semibold text-xs">
                 Gold 24K (Fine 999) Rate / gram
               </label>
               <div className="relative">
@@ -244,10 +226,108 @@ export const SettingsView: React.FC<{ onRatesUpdated?: () => void }> = ({ onRate
                   required
                   disabled={!isAdmin}
                   value={formData.todayGold24kRate}
+                  onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      todayGold24kRate: parseFloat(e.target.value) || 0,
+                      todayGold24kRate: Math.max(0, parseFloat(e.target.value) || 0),
+                    })
+                  }
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-slate-100 font-mono font-bold text-sm focus:outline-none focus:border-amber-500/50 disabled:opacity-75"
+                />
+              </div>
+            </div>
+
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+              <label className="block text-amber-400 font-semibold text-xs">
+                Gold 22K (916) Rate / gram
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-2 text-slate-500 font-mono text-sm">₹</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  required
+                  disabled={!isAdmin}
+                  value={formData.todayGold22kRate}
+                  onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      todayGold22kRate: Math.max(0, parseFloat(e.target.value) || 0),
+                    })
+                  }
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-slate-100 font-mono font-bold text-sm focus:outline-none focus:border-amber-500/50 disabled:opacity-75"
+                />
+              </div>
+            </div>
+
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+              <label className="block text-amber-400 font-semibold text-xs">
+                Gold 20K (833) Rate / gram
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-2 text-slate-500 font-mono text-sm">₹</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  disabled={!isAdmin}
+                  value={formData.todayGold20kRate}
+                  onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      todayGold20kRate: Math.max(0, parseFloat(e.target.value) || 0),
+                    })
+                  }
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-slate-100 font-mono font-bold text-sm focus:outline-none focus:border-amber-500/50 disabled:opacity-75"
+                />
+              </div>
+            </div>
+
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+              <label className="block text-amber-400 font-semibold text-xs">
+                Gold 18K (750) Rate / gram
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-2 text-slate-500 font-mono text-sm">₹</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  disabled={!isAdmin}
+                  value={formData.todayGold18kRate}
+                  onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      todayGold18kRate: Math.max(0, parseFloat(e.target.value) || 0),
+                    })
+                  }
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-slate-100 font-mono font-bold text-sm focus:outline-none focus:border-amber-500/50 disabled:opacity-75"
+                />
+              </div>
+            </div>
+
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+              <label className="block text-amber-400 font-semibold text-xs">
+                Gold 14K (585) Rate / gram
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-2 text-slate-500 font-mono text-sm">₹</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  disabled={!isAdmin}
+                  value={formData.todayGold14kRate}
+                  onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      todayGold14kRate: Math.max(0, parseFloat(e.target.value) || 0),
                     })
                   }
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-slate-100 font-mono font-bold text-sm focus:outline-none focus:border-amber-500/50 disabled:opacity-75"
@@ -268,10 +348,11 @@ export const SettingsView: React.FC<{ onRatesUpdated?: () => void }> = ({ onRate
                   required
                   disabled={!isAdmin}
                   value={formData.todaySilverRate}
+                  onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      todaySilverRate: parseFloat(e.target.value) || 0,
+                      todaySilverRate: Math.max(0, parseFloat(e.target.value) || 0),
                     })
                   }
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-slate-100 font-mono font-bold text-sm focus:outline-none focus:border-amber-500/50 disabled:opacity-75"
